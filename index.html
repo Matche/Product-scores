@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sollars Scores</title>
+  <style>
+    /* Import Satoshi font */
+    @import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;700&display=swap');
+
+    body {
+      font-family: 'Satoshi', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #F8F8F9;
+      color: #323232;
+    }
+
+    header {
+      background-color: #F8F8F9;
+      color: #FF6B00;
+      padding: 1rem;
+      width: 100%;
+      text-align: center;
+    }
+
+    header h1 {
+      font-weight: 700; /* Bold */
+      margin: 0;
+      color: #FF6B00; /* Orange title */
+    }
+
+    main {
+      max-width: 900px;
+      width: 100%;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    h2, h3 {
+      color: #323232;
+      font-weight: 700; /* Bold for headings */
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      margin-bottom: 0.5rem;
+      font-weight: 400; /* Regular */
+    }
+
+    .form-group input, .form-group select {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #323232;
+      border-radius: 4px;
+      background-color: #F8F8F9;
+      color: #323232;
+    }
+
+    .form-group input[type="number"] {
+      width: 100px;
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .button-group button {
+      padding: 0.5rem 1rem;
+      margin-right: 1rem;
+      font-size: 1rem;
+      font-weight: 700; /* Bold for buttons */
+      border: none;
+      cursor: pointer;
+      background-color: #FF6B00;
+      color: #F8F8F9;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .button-group button:hover {
+      background-color: #D55A00;
+    }
+
+    .saved-ideas {
+      margin-top: 2rem;
+    }
+
+    .saved-ideas h3 {
+      margin-bottom: 1rem;
+    }
+
+    .idea-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem;
+      border: 1px solid #323232;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      background: #F8F8F9;
+    }
+
+    .idea-item h4 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 400; /* Regular */
+    }
+
+    .chart-container {
+      margin-top: 2rem;
+      position: relative;
+      text-align: center;
+    }
+
+    #chartCanvas {
+      background: #FFFFFF;
+      border: 1px solid #323232;
+      width: 100%;
+      max-width: 800px;
+      height: 400px;
+    }
+
+    .axis-label {
+      position: absolute;
+      font-size: 1rem;
+      color: #323232;
+    }
+
+    .x-axis-label {
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .y-axis-label {
+      top: 50%;
+      left: 10px;
+      transform: translateY(-50%) rotate(-90deg);
+    }
+
+    .legend {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .legend-color {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+    }
+
+    .legend-label {
+      font-size: 0.9rem;
+      font-weight: 400; /* Regular */
+    }
+
+    @media screen and (max-width: 768px) {
+      #chartCanvas {
+        width: 100%;
+        height: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sollars Scores</h1>
+  </header>
+  <main>
+    <section>
+      <h2>Phase de saisie</h2>
+      <form id="ideaForm">
+        <!-- Form fields here -->
+      </form>
+    </section>
+  </main>
+</body>
+</html>
