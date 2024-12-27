@@ -79,34 +79,47 @@
       background-color: white;
     }
 
-    .legend {
-      text-align: center;
-      margin-top: 10px;
+    .saved-ideas-container {
+      margin-top: 20px;
     }
 
-    .legend span {
-      display: inline-block;
-      margin-right: 15px;
-      font-family: 'Satoshi', sans-serif;
+    .saved-ideas-container h2 {
+      font-size: 18px;
+      margin-bottom: 10px;
     }
 
-    .legend .dot {
-      height: 10px;
-      width: 10px;
-      border-radius: 50%;
-      display: inline-block;
+    .idea-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      border: 2px solid;
+      border-radius: 8px;
+      background-color: #ffffff;
     }
 
-    .legend .dot.connaissances {
-      background-color: #7CB63D;
+    .idea-card span {
+      font-size: 14px;
     }
 
-    .legend .dot.analyse {
-      background-color: #C585F6;
+    .idea-card .btn-wrapper {
+      display: flex;
+      gap: 10px;
     }
 
-    .legend .dot.redaction {
-      background-color: #306FED;
+    .idea-card button {
+      padding: 5px 10px;
+      font-size: 12px;
+      border: 1px solid #A9A9A9; /* Dark gray border */
+      background-color: transparent; /* Transparent background */
+      color: #A9A9A9; /* Dark gray text */
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .idea-card button:hover {
+      background-color: #F8F8F9; /* Slight hover background */
     }
   </style>
 </head>
@@ -197,6 +210,12 @@
       </select>
 
       <button onclick="ajouterIdee()">Ajouter l'idée</button>
+
+      <!-- Section for displaying saved ideas -->
+      <div class="saved-ideas-container">
+        <h2>Idées enregistrées</h2>
+        <div id="savedIdeas"></div>
+      </div>
     </div>
 
     <!-- Section Benchmark -->
@@ -204,11 +223,6 @@
       <h2>Visualisation</h2>
       <div class="canvas-container">
         <canvas id="benchmarkChart" width="400" height="400"></canvas>
-      </div>
-      <div class="legend">
-        <span><span class="dot connaissances"></span> Connaissances internes</span>
-        <span><span class="dot analyse"></span> Analyse</span>
-        <span><span class="dot redaction"></span> Rédaction</span>
       </div>
     </div>
   </div>
@@ -265,12 +279,57 @@
       const idee = {
         nom,
         categorie,
-        desirabilite,
-        faisabilite,
+        desirabilite: parseFloat(desirabilite),
+        faisabilite: parseFloat(faisabilite),
+        portee,
+        scoreTotal: parseFloat(desirabilite) + parseFloat(faisabilite),
       };
 
       idees.push(idee);
+      afficherIdees();
       mettreAJourGraphique();
+    }
+
+    // Afficher les idées enregistrées
+    function afficherIdees() {
+      const savedIdeasContainer = document.getElementById("savedIdeas");
+      savedIdeasContainer.innerHTML = "";
+
+      // Trier les idées par score total (décroissant)
+      idees.sort((a, b) => b.scoreTotal - a.scoreTotal);
+
+      idees.forEach((idee, index) => {
+        const card = document.createElement("div");
+        card.className = "idea-card";
+        card.style.borderColor = getCouleurCategorie(idee.categorie);
+
+        card.innerHTML = `
+          <span>${idee.nom} - Score total: ${idee.scoreTotal.toFixed(2)}</span>
+          <div class="btn-wrapper">
+            <button onclick="editerIdee(${index})">Éditer</button>
+            <button onclick="supprimerIdee(${index})">Supprimer</button>
+          </div>
+        `;
+
+        savedIdeasContainer.appendChild(card);
+      });
+    }
+
+    // Supprimer une idée
+    function supprimerIdee(index) {
+      idees.splice(index, 1);
+      afficherIdees();
+      mettreAJourGraphique();
+    }
+
+    // Éditer une idée
+    function editerIdee(index) {
+      const idee = idees[index];
+      document.getElementById("nom-idee").value = idee.nom;
+      document.getElementById("categorie").value = idee.categorie;
+      document.getElementById("qualite-donnees").value = Math.round(idee.desirabilite);
+      document.getElementById("complexite-technique").value = Math.round(idee.faisabilite);
+      supprimerIdee(index);
     }
 
     // Mettre à jour le graphique
@@ -280,6 +339,7 @@
           label: idee.nom,
           data: [{ x: parseFloat(idee.desirabilite), y: parseFloat(idee.faisabilite) }],
           backgroundColor: getCouleurCategorie(idee.categorie),
+          radius: Math.max(idee.portee * 2, 5),
         })),
       };
 
@@ -347,11 +407,11 @@
     function getCouleurCategorie(categorie) {
       switch (categorie) {
         case "connaissances-internes":
-          return "#7CB63D";
+          return "#7CB63D"; // Green
         case "analyse":
-          return "#C585F6";
+          return "#C585F6"; // Purple
         case "redaction":
-          return "#306FED";
+          return "#306FED"; // Blue
         default:
           return "rgba(201, 203, 207, 0.6)";
       }
