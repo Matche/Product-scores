@@ -3,347 +3,360 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sollars Scores</title>
+  <title>Évaluation des Solutions</title>
   <style>
-    /* Import Satoshi font */
-    @import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;700&display=swap');
+    /* Import the Satoshi font */
+    @import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;700&display=swap');
 
     body {
       font-family: 'Satoshi', sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      margin: 20px;
+      line-height: 1.6;
       background-color: #F8F8F9;
-      color: #323232;
     }
 
-    header {
-      background-color: #F8F8F9;
+    h1, h2 {
+      text-align: center;
       color: #FF6B00;
-      padding: 1rem;
-      width: 100%;
-      text-align: center;
     }
 
-    header h1 {
-      font-weight: 700; /* Bold */
-      margin: 0;
-      color: #FF6B00; /* Orange title */
-    }
-
-    main {
-      max-width: 900px;
-      width: 100%;
-      padding: 1.5rem;
-      box-sizing: border-box;
-    }
-
-    h2, h3 {
-      color: #323232;
-      font-weight: 700; /* Bold for headings */
-    }
-
-    .form-group {
+    .container {
       display: flex;
-      flex-direction: column;
-      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 20px;
     }
 
-    .form-group label {
-      margin-bottom: 0.5rem;
-      font-weight: 400; /* Regular */
+    .section {
+      flex: 1;
+      min-width: 300px;
+      padding: 20px;
+      border: 1px solid #cccccc;
+      border-radius: 8px;
+      background-color: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
-    .form-group input, .form-group select {
-      padding: 0.5rem;
-      font-size: 1rem;
-      border: 1px solid #323232;
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    input[type="text"], select {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #cccccc;
       border-radius: 4px;
-      background-color: #F8F8F9;
-      color: #323232;
+      font-family: 'Satoshi', sans-serif;
     }
 
-    .form-group input[type="number"] {
-      width: 100px;
-    }
-
-    .button-group {
-      display: flex;
-      justify-content: flex-start;
-      margin-bottom: 1.5rem;
-    }
-
-    .button-group button {
-      padding: 0.5rem 1rem;
-      margin-right: 1rem;
-      font-size: 1rem;
-      font-weight: 700; /* Bold for buttons */
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
       border: none;
-      cursor: pointer;
+      border-radius: 4px;
       background-color: #FF6B00;
-      color: #F8F8F9;
-      border-radius: 4px;
-      transition: background-color 0.3s;
+      color: white;
+      cursor: pointer;
+      font-weight: 500;
+      font-family: 'Satoshi', sans-serif;
     }
 
-    .button-group button:hover {
-      background-color: #D55A00;
+    button:hover {
+      background-color: #e65c00;
     }
 
-    .saved-ideas {
-      margin-top: 2rem;
-    }
-
-    .saved-ideas h3 {
-      margin-bottom: 1rem;
-    }
-
-    .idea-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.5rem;
-      border: 1px solid #323232;
-      border-radius: 4px;
-      margin-bottom: 0.5rem;
-      background: #F8F8F9;
-    }
-
-    .idea-item h4 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 400; /* Regular */
-    }
-
-    .chart-container {
-      margin-top: 2rem;
-      position: relative;
+    .canvas-container {
+      margin-top: 20px;
       text-align: center;
     }
 
-    #chartCanvas {
-      background: #FFFFFF;
-      border: 1px solid #323232;
-      width: 100%;
-      max-width: 800px;
-      height: 400px;
-    }
-
-    .axis-label {
-      position: absolute;
-      font-size: 1rem;
-      color: #323232;
-    }
-
-    .x-axis-label {
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .y-axis-label {
-      top: 50%;
-      left: 10px;
-      transform: translateY(-50%) rotate(-90deg);
+    canvas {
+      border: 1px solid #cccccc;
+      border-radius: 8px;
+      background-color: white;
     }
 
     .legend {
-      margin-top: 1rem;
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
+      text-align: center;
+      margin-top: 10px;
     }
 
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .legend span {
+      display: inline-block;
+      margin-right: 15px;
+      font-family: 'Satoshi', sans-serif;
     }
 
-    .legend-color {
-      width: 15px;
-      height: 15px;
+    .legend .dot {
+      height: 10px;
+      width: 10px;
       border-radius: 50%;
+      display: inline-block;
     }
 
-    .legend-label {
-      font-size: 0.9rem;
-      font-weight: 400; /* Regular */
+    .legend .dot.connaissances {
+      background-color: #7CB63D;
     }
 
-    @media screen and (max-width: 768px) {
-      #chartCanvas {
-        width: 100%;
-        height: 300px;
-      }
+    .legend .dot.analyse {
+      background-color: #C585F6;
+    }
+
+    .legend .dot.redaction {
+      background-color: #306FED;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Sollars Scores</h1>
-  </header>
-  <main>
-    <section>
-      <h2>Phase de saisie</h2>
-      <form id="ideaForm">
-        <div class="form-group">
-          <label for="ideaName">Nom de l'idée</label>
-          <input type="text" id="ideaName" placeholder="Entrez le nom de l'idée" required>
-        </div>
-        <div class="form-group">
-          <label for="category">Catégorie</label>
-          <select id="category" required>
-            <option value="" disabled selected>Sélectionnez une catégorie</option>
-            <option value="Connaissances internes">Connaissances internes</option>
-            <option value="Analyse">Analyse</option>
-            <option value="Rédaction">Rédaction</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="dataQuality">Qualité des données (0-10)</label>
-          <input type="number" id="dataQuality" min="0" max="10" required>
-        </div>
-        <div class="form-group">
-          <label for="techComplexity">Complexité technique (0-10)</label>
-          <input type="number" id="techComplexity" min="0" max="10" required>
-        </div>
-        <div class="form-group">
-          <label for="devCost">Coût de développement (0-10)</label>
-          <input type="number" id="devCost" min="0" max="10" required>
-        </div>
-        <div class="form-group">
-          <label for="expectedBenefits">Bénéfices attendus (0-10)</label>
-          <input type="number" id="expectedBenefits" min="0" max="10" required>
-        </div>
-        <div class="button-group">
-          <button type="button" id="addIdea">Ajouter une idée</button>
-        </div>
-      </form>
-    </section>
-    <section class="saved-ideas">
-      <h3>Idées enregistrées</h3>
-      <div id="ideasList"></div>
-    </section>
-    <section class="chart-container">
-      <h3>Visualisation</h3>
-      <canvas id="chartCanvas"></canvas>
-      <div class="axis-label x-axis-label">Faisabilité</div>
-      <div class="axis-label y-axis-label">Désirabilité</div>
-      <div class="legend">
-        <div class="legend-item">
-          <div class="legend-color" style="background-color: #7CB63D;"></div>
-          <div class="legend-label">Connaissances internes</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background-color: #C585F6;"></div>
-          <div class="legend-label">Analyse</div>
-        </div>
-        <div class="legend-item">
-          <div class="legend-color" style="background-color: #306FED;"></div>
-          <div class="legend-label">Rédaction</div>
-        </div>
+  <h1>Évaluation des Solutions</h1>
+  <div class="container">
+    <!-- Section Évaluation -->
+    <div class="section">
+      <h2>Évaluation</h2>
+      <label for="nom-idee">Nom de l'idée :</label>
+      <input type="text" id="nom-idee" placeholder="Entrez le nom de l'idée">
+
+      <label for="categorie">Catégorie :</label>
+      <select id="categorie">
+        <option value="connaissances-internes">Connaissances internes</option>
+        <option value="analyse">Analyse</option>
+        <option value="redaction">Rédaction</option>
+      </select>
+
+      <label for="qualite-donnees">Qualité des données :</label>
+      <select id="qualite-donnees">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="complexite-technique">Complexité technique :</label>
+      <select id="complexite-technique">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="couts-developpement">Coûts de développement :</label>
+      <select id="couts-developpement">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="benefices">Bénéfices :</label>
+      <select id="benefices">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="portee">Portée :</label>
+      <select id="portee">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <button onclick="ajouterIdee()">Ajouter l'idée</button>
+    </div>
+
+    <!-- Section Benchmark -->
+    <div class="section">
+      <h2>Visualisation</h2>
+      <div class="canvas-container">
+        <canvas id="benchmarkChart" width="400" height="400"></canvas>
       </div>
-    </section>
-  </main>
+      <div class="legend">
+        <span><span class="dot connaissances"></span> Connaissances internes</span>
+        <span><span class="dot analyse"></span> Analyse</span>
+        <span><span class="dot redaction"></span> Rédaction</span>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const ideas = [];
-    const canvas = document.getElementById('chartCanvas');
-    const ctx = canvas.getContext('2d');
+    const idees = [];
+    let chart = null;
 
-    const ideaForm = document.getElementById('ideaForm');
-    const ideaNameInput = document.getElementById('ideaName');
-    const categoryInput = document.getElementById('category');
-    const dataQualityInput = document.getElementById('dataQuality');
-    const techComplexityInput = document.getElementById('techComplexity');
-    const devCostInput = document.getElementById('devCost');
-    const expectedBenefitsInput = document.getElementById('expectedBenefits');
-    const ideasList = document.getElementById('ideasList');
-    const addIdeaButton = document.getElementById('addIdea');
-
-    const categoryColors = {
-      "Connaissances internes": "#7CB63D", // Green
-      "Analyse": "#C585F6", // Purple
-      "Rédaction": "#306FED" // Blue
-    };
-
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-
-    function calculateScores(dataQuality, techComplexity, devCost, expectedBenefits) {
-      const feasibility = ((dataQuality * 0.35 + techComplexity * 0.35) * 10) / 0.7;
-      const desirability = ((expectedBenefits / (devCost || 1)) * 10) / 1;
-      const totalScore = ((feasibility * 0.7 + desirability * 0.3) / 10) * 10;
-      return { feasibility, desirability, totalScore };
+    // Fonction pour calculer la Désirabilité
+    function calculerDesirabilite(benefices, portee) {
+      return (benefices * 0.6 + portee * 0.4).toFixed(2);
     }
 
-    function renderIdeas() {
-      ideasList.innerHTML = '';
-      ideas.forEach((idea, index) => {
-        const ideaItem = document.createElement('div');
-        ideaItem.className = 'idea-item';
-        const ideaName = document.createElement('h4');
-        ideaName.textContent = `${idea.name} - Catégorie: ${idea.category} - Score total: ${idea.scores.totalScore.toFixed(2)}`;
-        const removeButton = document.createElement('button');
-        removeButton.textContent = 'Supprimer';
-        removeButton.addEventListener('click', () => {
-          ideas.splice(index, 1);
-          renderIdeas();
-          renderChart();
-        });
-        ideaItem.appendChild(ideaName);
-        ideaItem.appendChild(removeButton);
-        ideasList.appendChild(ideaItem);
-      });
+    // Fonction pour calculer la Faisabilité
+    function calculerFaisabilite(qualiteDonnees, complexiteTechnique, coutsDeveloppement) {
+      return (
+        (qualiteDonnees * 0.4 + complexiteTechnique * 0.3 + coutsDeveloppement * 0.3)
+      ).toFixed(2);
     }
 
-    function renderChart() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#ddd';
-      ctx.lineWidth = 1;
+    // Ajouter une idée
+    function ajouterIdee() {
+      const nom = document.getElementById("nom-idee").value;
+      const categorie = document.getElementById("categorie").value;
+      const qualiteDonnees = parseFloat(document.getElementById("qualite-donnees").value);
+      const complexiteTechnique = parseFloat(
+        document.getElementById("complexite-technique").value
+      );
+      const coutsDeveloppement = parseFloat(
+        document.getElementById("couts-developpement").value
+      );
+      const benefices = parseFloat(document.getElementById("benefices").value);
+      const portee = parseFloat(document.getElementById("portee").value);
 
-      // Draw grid
-      ctx.beginPath();
-      ctx.moveTo(canvas.width / 2, 0);
-      ctx.lineTo(canvas.width / 2, canvas.height);
-      ctx.moveTo(0, canvas.height / 2);
-      ctx.lineTo(canvas.width, canvas.height / 2);
-      ctx.stroke();
-
-      // Draw points
-      ideas.forEach(idea => {
-        const x = (idea.scores.feasibility / 10) * canvas.width;
-        const y = canvas.height - (idea.scores.desirability / 10) * canvas.height;
-        ctx.fillStyle = categoryColors[idea.category];
-        ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    addIdeaButton.addEventListener('click', () => {
-      const name = ideaNameInput.value.trim();
-      const category = categoryInput.value;
-      const dataQuality = parseFloat(dataQualityInput.value);
-      const techComplexity = parseFloat(techComplexityInput.value);
-      const devCost = parseFloat(devCostInput.value);
-      const expectedBenefits = parseFloat(expectedBenefitsInput.value);
-
-      if (name && category && !isNaN(dataQuality) && !isNaN(techComplexity) && !isNaN(devCost) && !isNaN(expectedBenefits)) {
-        const scores = calculateScores(dataQuality, techComplexity, devCost, expectedBenefits);
-        ideas.push({ name, category, scores });
-        renderIdeas();
-        renderChart();
-        ideaForm.reset();
-      } else {
-        alert('Veuillez remplir tous les champs avec des valeurs valides.');
+      if (
+        !nom ||
+        isNaN(qualiteDonnees) ||
+        isNaN(complexiteTechnique) ||
+        isNaN(coutsDeveloppement) ||
+        isNaN(benefices) ||
+        isNaN(portee)
+      ) {
+        alert("Veuillez remplir tous les champs correctement.");
+        return;
       }
-    });
 
-    renderChart();
+      const desirabilite = calculerDesirabilite(benefices, portee);
+      const faisabilite = calculerFaisabilite(
+        qualiteDonnees,
+        complexiteTechnique,
+        coutsDeveloppement
+      );
+
+      const idee = {
+        nom,
+        categorie,
+        desirabilite,
+        faisabilite,
+      };
+
+      idees.push(idee);
+      mettreAJourGraphique();
+    }
+
+    // Mettre à jour le graphique
+    function mettreAJourGraphique() {
+      const data = {
+        datasets: idees.map((idee) => ({
+          label: idee.nom,
+          data: [{ x: parseFloat(idee.desirabilite), y: parseFloat(idee.faisabilite) }],
+          backgroundColor: getCouleurCategorie(idee.categorie),
+        })),
+      };
+
+      const config = {
+        type: "scatter",
+        data,
+        options: {
+          plugins: {
+            legend: { display: false },
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Désirabilité",
+                color: "#A0A0A0",
+                font: {
+                  size: 14,
+                },
+              },
+              ticks: {
+                color: "#A0A0A0",
+                font: {
+                  size: 12,
+                },
+              },
+              grid: {
+                color: "#E0E0E0",
+              },
+              beginAtZero: true,
+              max: 10,
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Faisabilité",
+                color: "#A0A0A0",
+                font: {
+                  size: 14,
+                },
+              },
+              ticks: {
+                color: "#A0A0A0",
+                font: {
+                  size: 12,
+                },
+              },
+              grid: {
+                color: "#E0E0E0",
+              },
+              beginAtZero: true,
+              max: 10,
+            },
+          },
+        },
+      };
+
+      if (chart) chart.destroy();
+
+      const ctx = document.getElementById("benchmarkChart").getContext("2d");
+      chart = new Chart(ctx, config);
+    }
+
+    // Obtenir la couleur en fonction de la catégorie
+    function getCouleurCategorie(categorie) {
+      switch (categorie) {
+        case "connaissances-internes":
+          return "#7CB63D";
+        case "analyse":
+          return "#C585F6";
+        case "redaction":
+          return "#306FED";
+        default:
+          return "rgba(201, 203, 207, 0.6)";
+      }
+    }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
