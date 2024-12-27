@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Évaluation des Solutions</title>
   <style>
-    /* Import the Satoshi font */
     @import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;700&display=swap');
 
     body {
@@ -42,7 +41,7 @@
       font-weight: 500;
     }
 
-    input[type="text"], select {
+    input, select {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -89,52 +88,13 @@
       align-items: center;
       padding: 10px 15px;
       margin-bottom: 10px;
-      border: 2px solid;
+      border: 2px solid #cccccc;
       border-radius: 8px;
       background-color: #ffffff;
     }
 
     .idea-card span {
       font-size: 14px;
-    }
-
-    .idea-card .btn-wrapper {
-      display: flex;
-      gap: 10px;
-    }
-
-    .idea-card button {
-      padding: 5px 10px;
-      font-size: 12px;
-      border: 1px solid #A9A9A9; /* Dark gray border */
-      background-color: transparent; /* Transparent background */
-      color: #A9A9A9; /* Dark gray text */
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    .idea-card button:hover {
-      background-color: #F8F8F9; /* Slight hover background */
-    }
-
-    .legend-container {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .legend-item {
-      display: inline-block;
-      margin-right: 15px;
-    }
-
-    .legend-box {
-      display: inline-block;
-      width: 12px;
-      height: 12px;
-      margin-right: 5px;
-      border: 1px solid #ccc;
-      border-radius: 2px;
     }
   </style>
 </head>
@@ -226,42 +186,80 @@
 
       <button onclick="ajouterIdee()">Ajouter l'idée</button>
 
-      <!-- Section for displaying saved ideas -->
       <div class="saved-ideas-container">
         <h2>Idées enregistrées</h2>
         <div id="savedIdeas"></div>
       </div>
     </div>
-
-    <!-- Section Benchmark -->
-    <div class="section">
-      <h2>Visualisation</h2>
-      <div class="canvas-container">
-        <canvas id="benchmarkChart" width="400" height="400"></canvas>
-      </div>
-      <div class="legend-container">
-        <div class="legend-item">
-          <div class="legend-box" style="background-color: #7CB63D;"></div> Connaissances internes
-        </div>
-        <div class="legend-item">
-          <div class="legend-box" style="background-color: #C585F6;"></div> Analyse
-        </div>
-        <div class="legend-item">
-          <div class="legend-box" style="background-color: #306FED;"></div> Rédaction
-        </div>
-      </div>
-    </div>
   </div>
 
-  <!-- Firebase Script -->
   <script type="module">
+    // Import Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 
-    // Firebase Configuration
+    // Firebase configuration for "sollars-scores"
     const firebaseConfig = {
-      apiKey: "AIza...",
+      apiKey: "AIzaSyA4K3cDg6CPpClMwin9MjoFMMTP78t59sM",
+      authDomain: "sollars-scores.firebaseapp.com",
+      databaseURL: "https://sollars-scores-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "sollars-scores",
+      storageBucket: "sollars-scores.appspot.com",
+      messagingSenderId: "1030240182870",
+      appId: "1:1030240182870:web:5e2adc87736b86df2591f7"
     };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    // Add idea to Firebase
+    async function ajouterIdee() {
+      const nom = document.getElementById("nom-idee").value.trim();
+      const categorie = document.getElementById("categorie").value;
+      const qualiteDonnees = parseInt(document.getElementById("qualite-donnees").value);
+      const complexiteTechnique = parseInt(document.getElementById("complexite-technique").value);
+      const coutsDeveloppement = parseInt(document.getElementById("couts-developpement").value);
+      const benefices = parseInt(document.getElementById("benefices").value);
+      const portee = parseInt(document.getElementById("portee").value);
+
+      // Validate inputs
+      if (!nom) {
+        alert("Veuillez entrer un nom pour l'idée.");
+        return;
+      }
+
+      const desirabilite = (benefices * 0.6 + portee * 0.4).toFixed(2);
+      const faisabilite = (qualiteDonnees * 0.4 + complexiteTechnique * 0.3 + coutsDeveloppement * 0.3).toFixed(2);
+
+      const idee = {
+        nom,
+        categorie,
+        desirabilite: parseFloat(desirabilite),
+        faisabilite: parseFloat(faisabilite)
+      };
+
+      try {
+        await push(ref(database, "ideas"), idee);
+        alert("Idée ajoutée avec succès !");
+      } catch (error) {
+        console.error("Erreur lors de l'ajout de l'idée :", error);
+        alert("Une erreur est survenue. Veuillez réessayer.");
+      }
+    }
+
+    // Fetch and display ideas from Firebase
+    onValue(ref(database, "ideas"), (snapshot) => {
+      const savedIdeas = document.getElementById("savedIdeas");
+      savedIdeas.innerHTML = "";
+      snapshot.forEach((childSnapshot) => {
+        const idee = childSnapshot.val();
+        const div = document.createElement("div");
+        div.className = "idea-card";
+        div.innerHTML = `<span>${idee.nom} (Desirabilité: ${idee.desirabilite}, Faisabilité: ${idee.faisabilite})</span>`;
+        savedIdeas.appendChild(div);
+      });
+    });
   </script>
 </body>
 </html>
