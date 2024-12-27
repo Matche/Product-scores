@@ -83,11 +83,6 @@
       margin-top: 20px;
     }
 
-    .saved-ideas-container h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
     .idea-card {
       display: flex;
       justify-content: space-between;
@@ -261,8 +256,9 @@
   <!-- Firebase Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
-    import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+    import { getDatabase, ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
 
+    // Firebase Configuration
     const firebaseConfig = {
       apiKey: "AIza...",
     };
