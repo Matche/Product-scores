@@ -123,4 +123,259 @@
     }
 
     .legend-container {
-      margin-top: 20px
+      margin-top: 20px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: inline-block;
+      margin-right: 15px;
+    }
+
+    .legend-box {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-right: 5px;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Évaluation des Solutions</h1>
+  <div class="container">
+    <!-- Section: Form -->
+    <div class="section">
+      <h2>Ajouter une idée</h2>
+      <label for="nom-idee">Nom de l'idée :</label>
+      <input type="text" id="nom-idee" placeholder="Entrez le nom de l'idée">
+
+      <label for="categorie">Catégorie :</label>
+      <select id="categorie">
+        <option value="connaissances-internes">Connaissances internes</option>
+        <option value="analyse">Analyse</option>
+        <option value="redaction">Rédaction</option>
+      </select>
+
+      <label for="qualite-donnees">Qualité des données :</label>
+      <select id="qualite-donnees">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="complexite-technique">Complexité technique :</label>
+      <select id="complexite-technique">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="couts-developpement">Coûts de développement :</label>
+      <select id="couts-developpement">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="benefices">Bénéfices :</label>
+      <select id="benefices">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <label for="portee">Portée :</label>
+      <select id="portee">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+        <option value="8">8</option>
+        <option value="9">9</option>
+        <option value="10">10</option>
+      </select>
+
+      <button onclick="ajouterIdee()">Ajouter l'idée</button>
+    </div>
+
+    <!-- Section: Saved Ideas -->
+    <div class="section">
+      <h2>Idées enregistrées</h2>
+      <div id="savedIdeas"></div>
+    </div>
+
+    <!-- Section: Chart -->
+    <div class="section">
+      <h2>Visualisation</h2>
+      <div class="canvas-container">
+        <canvas id="benchmarkChart" width="400" height="400"></canvas>
+      </div>
+      <div class="legend-container">
+        <div class="legend-item">
+          <div class="legend-box" style="background-color: #7CB63D;"></div> Connaissances internes
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background-color: #C585F6;"></div> Analyse
+        </div>
+        <div class="legend-item">
+          <div class="legend-box" style="background-color: #306FED;"></div> Rédaction
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module">
+    // Firebase configuration and initialization
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+
+    let chart = null;
+
+    function ajouterIdee() {
+      const nom = document.getElementById("nom-idee").value.trim();
+      const categorie = document.getElementById("categorie").value;
+      const qualiteDonnees = parseFloat(document.getElementById("qualite-donnees").value);
+      const complexiteTechnique = parseFloat(document.getElementById("complexite-technique").value);
+      const coutsDeveloppement = parseFloat(document.getElementById("couts-developpement").value);
+      const benefices = parseFloat(document.getElementById("benefices").value);
+      const portee = parseFloat(document.getElementById("portee").value);
+
+      if (!nom) {
+        alert("Le nom de l'idée est obligatoire.");
+        return;
+      }
+
+      const desirabilite = (benefices * 0.6 + portee * 0.4).toFixed(2);
+      const faisabilite = (qualiteDonnees * 0.4 + complexiteTechnique * 0.3 + coutsDeveloppement * 0.3).toFixed(2);
+      const idee = { nom, categorie, desirabilite, faisabilite, portee };
+
+      push(ref(database, "ideas"), idee)
+        .then(() => {
+          alert("Idée ajoutée avec succès !");
+        })
+        .catch((error) => {
+          console.error("Erreur lors de l'ajout de l'idée :", error);
+        });
+    }
+
+    function afficherIdees() {
+      const savedIdeasContainer = document.getElementById("savedIdeas");
+      const ideasRef = ref(database, "ideas");
+
+      onValue(ideasRef, (snapshot) => {
+        savedIdeasContainer.innerHTML = "";
+        const data = [];
+        snapshot.forEach((child) => {
+          const idee = child.val();
+          idee.key = child.key;
+          data.push(idee);
+        });
+
+        // Sort and display ideas
+        data.sort((a, b) => b.desirabilite - a.desirabilite).forEach((idee) => {
+          const card = document.createElement("div");
+          card.className = "idea-card";
+          card.innerHTML = `
+            <span>${idee.nom} - Désirabilité: ${idee.desirabilite}, Faisabilité: ${idee.faisabilite}</span>
+            <button onclick="supprimerIdee('${idee.key}')">Supprimer</button>
+          `;
+          savedIdeasContainer.appendChild(card);
+        });
+
+        mettreAJourGraphique(data);
+      });
+    }
+
+    function supprimerIdee(key) {
+      remove(ref(database, `ideas/${key}`))
+        .then(() => {
+          alert("Idée supprimée avec succès !");
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la suppression de l'idée :", error);
+        });
+    }
+
+    function mettreAJourGraphique(data) {
+      const datasets = data.map((idee) => ({
+        label: idee.nom,
+        data: [{ x: parseFloat(idee.desirabilite), y: parseFloat(idee.faisabilite) }],
+        backgroundColor: getCouleurCategorie(idee.categorie),
+        radius: Math.max(idee.portee * 2, 5),
+      }));
+
+      const ctx = document.getElementById("benchmarkChart").getContext("2d");
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: "scatter",
+        data: { datasets },
+        options: {
+          scales: {
+            x: { beginAtZero: true, max: 10, title: { display: true, text: "Désirabilité" } },
+            y: { beginAtZero: true, max: 10, title: { display: true, text: "Faisabilité" } },
+          },
+        },
+      });
+    }
+
+    function getCouleurCategorie(categorie) {
+      switch (categorie) {
+        case "connaissances-internes": return "#7CB63D";
+        case "analyse": return "#C585F6";
+        case "redaction": return "#306FED";
+        default: return "#CCCCCC";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", afficherIdees);
+  </script>
+</body>
+</html>
