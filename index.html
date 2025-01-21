@@ -5,43 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Évaluation des Solutions</title>
   <style>
-    /* Import the Satoshi font */
     @import url('https://fonts.googleapis.com/css2?family=Satoshi:wght@300;400;500;700&display=swap');
-
+    
     body {
       font-family: 'Satoshi', sans-serif;
-      margin: 20px;
-      line-height: 1.6;
+      margin: 0;
+      padding: 0;
       background-color: #F8F8F9;
     }
-
-    h1, h2 {
-      text-align: center;
-      color: #FF6B00;
-    }
-
+    
     .container {
       display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
+      height: 100vh;
     }
-
+    
     .section {
       flex: 1;
-      min-width: 300px;
       padding: 20px;
       border: 1px solid #cccccc;
       border-radius: 8px;
       background-color: white;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin: 10px;
+      overflow-y: auto;
     }
-
+    
+    h2 {
+      text-align: center;
+      color: #FF6B00;
+    }
+    
     label {
       display: block;
       margin-top: 10px;
       font-weight: 500;
     }
-
+    
     input[type="text"], select {
       width: 100%;
       padding: 8px;
@@ -51,43 +50,33 @@
       border-radius: 4px;
       font-family: 'Satoshi', sans-serif;
     }
-
+    
     button {
       padding: 10px 15px;
-      margin-top: 10px;
       border: none;
       border-radius: 4px;
       background-color: #FF6B00;
       color: white;
       cursor: pointer;
       font-weight: 500;
-      font-family: 'Satoshi', sans-serif;
     }
-
+    
     button:hover {
       background-color: #e65c00;
     }
-
+    
     .canvas-container {
-      margin-top: 20px;
       text-align: center;
+      flex: 1;
+      margin-top: 20px;
     }
-
+    
     canvas {
       border: 1px solid #cccccc;
       border-radius: 8px;
       background-color: white;
     }
-
-    .saved-ideas-container {
-      margin-top: 20px;
-    }
-
-    .saved-ideas-container h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
+    
     .idea-card {
       display: flex;
       justify-content: space-between;
@@ -98,41 +87,39 @@
       border-radius: 8px;
       background-color: #ffffff;
     }
-
+    
     .idea-card span {
       font-size: 14px;
     }
-
+    
     .idea-card .btn-wrapper {
       display: flex;
       gap: 10px;
     }
-
+    
     .idea-card button {
       padding: 5px 10px;
       font-size: 12px;
-      border: 1px solid #A9A9A9; /* Dark gray border */
-      background-color: transparent; /* Transparent background */
-      color: #A9A9A9; /* Dark gray text */
-      border-radius: 4px;
-      cursor: pointer;
+      border: 1px solid #A9A9A9;
+      background-color: transparent;
+      color: #A9A9A9;
     }
-
+    
     .idea-card button:hover {
-      background-color: #F8F8F9; /* Slight hover background */
+      background-color: #F8F8F9;
     }
-
+    
     .legend-container {
       margin-top: 20px;
       text-align: center;
       font-size: 14px;
     }
-
+    
     .legend-item {
       display: inline-block;
       margin-right: 15px;
     }
-
+    
     .legend-box {
       display: inline-block;
       width: 12px;
@@ -144,7 +131,6 @@
   </style>
 </head>
 <body>
-  <h1>Évaluation des Solutions</h1>
   <div class="container">
     <!-- Section Évaluation -->
     <div class="section">
@@ -230,15 +216,15 @@
       </select>
 
       <button onclick="ajouterIdee()">Ajouter l'idée</button>
-
-      <!-- Section for displaying saved ideas -->
-      <div class="saved-ideas-container">
-        <h2>Idées enregistrées</h2>
-        <div id="savedIdeas"></div>
-      </div>
     </div>
 
-    <!-- Section Benchmark -->
+    <!-- Section Idées enregistrées -->
+    <div class="section">
+      <h2>Idées Enregistrées</h2>
+      <div id="savedIdeas"></div>
+    </div>
+
+    <!-- Section Visualisation -->
     <div class="section">
       <h2>Visualisation</h2>
       <div class="canvas-container">
@@ -258,54 +244,38 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script>
     const idees = [];
     let chart = null;
 
-    // Function to calculate desirability
     function calculerDesirabilite(benefices, portee) {
       return (benefices * 0.6 + portee * 0.4).toFixed(2);
     }
 
-    // Function to calculate feasibility
     function calculerFaisabilite(qualiteDonnees, complexiteTechnique, coutsDeveloppement) {
       return (
         (qualiteDonnees * 0.4 + complexiteTechnique * 0.3 + coutsDeveloppement * 0.3)
       ).toFixed(2);
     }
 
-    // Add an idea
     function ajouterIdee() {
       const nom = document.getElementById("nom-idee").value;
       const categorie = document.getElementById("categorie").value;
       const qualiteDonnees = parseFloat(document.getElementById("qualite-donnees").value);
-      const complexiteTechnique = parseFloat(
-        document.getElementById("complexite-technique").value
-      );
-      const coutsDeveloppement = parseFloat(
-        document.getElementById("couts-developpement").value
-      );
+      const complexiteTechnique = parseFloat(document.getElementById("complexite-technique").value);
+      const coutsDeveloppement = parseFloat(document.getElementById("couts-developpement").value);
       const benefices = parseFloat(document.getElementById("benefices").value);
       const portee = parseFloat(document.getElementById("portee").value);
 
-      if (
-        !nom ||
-        isNaN(qualiteDonnees) ||
-        isNaN(complexiteTechnique) ||
-        isNaN(coutsDeveloppement) ||
-        isNaN(benefices) ||
-        isNaN(portee)
-      ) {
+      if (!nom || isNaN(qualiteDonnees) || isNaN(complexiteTechnique) || 
+          isNaN(coutsDeveloppement) || isNaN(benefices) || isNaN(portee)) {
         alert("Veuillez remplir tous les champs correctement.");
         return;
       }
 
       const desirabilite = calculerDesirabilite(benefices, portee);
-      const faisabilite = calculerFaisabilite(
-        qualiteDonnees,
-        complexiteTechnique,
-        coutsDeveloppement
-      );
+      const faisabilite = calculerFaisabilite(qualiteDonnees, complexiteTechnique, coutsDeveloppement);
 
       const idee = {
         nom,
@@ -321,12 +291,10 @@
       mettreAJourGraphique();
     }
 
-    // Display saved ideas
     function afficherIdees() {
       const savedIdeasContainer = document.getElementById("savedIdeas");
       savedIdeasContainer.innerHTML = "";
 
-      // Sort by total score (descending)
       idees.sort((a, b) => b.scoreTotal - a.scoreTotal);
 
       idees.forEach((idee, index) => {
@@ -346,14 +314,12 @@
       });
     }
 
-    // Delete an idea
     function supprimerIdee(index) {
       idees.splice(index, 1);
       afficherIdees();
       mettreAJourGraphique();
     }
 
-    // Edit an idea
     function editerIdee(index) {
       const idee = idees[index];
       document.getElementById("nom-idee").value = idee.nom;
@@ -363,14 +329,14 @@
       supprimerIdee(index);
     }
 
-    // Update the graph
     function mettreAJourGraphique() {
       const data = {
         datasets: idees.map((idee) => ({
           label: idee.nom,
           data: [{ x: parseFloat(idee.desirabilite), y: parseFloat(idee.faisabilite) }],
           backgroundColor: getCouleurCategorie(idee.categorie),
-          radius: Math.max(idee.portee * 2, 5),
+          pointRadius: Math.max(idee.portee * 3, 5),
+          pointHoverRadius: Math.max(idee.portee * 3.5, 7),
         })),
       };
 
@@ -378,8 +344,24 @@
         type: "scatter",
         data,
         options: {
+          responsive: true,
+          maintainAspectRatio: false,
           plugins: {
             legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const point = context.raw;
+                  const idee = idees[context.datasetIndex];
+                  return [
+                    `${idee.nom}`,
+                    `Désirabilité: ${point.x}`,
+                    `Faisabilité: ${point.y}`,
+                    `Portée: ${idee.portee}`
+                  ];
+                }
+              }
+            }
           },
           scales: {
             x: {
@@ -387,19 +369,13 @@
                 display: true,
                 text: "Désirabilité",
                 color: "#A0A0A0",
-                font: {
-                  size: 14,
-                },
+                font: { size: 14 },
               },
               ticks: {
                 color: "#A0A0A0",
-                font: {
-                  size: 12,
-                },
+                font: { size: 12 },
               },
-              grid: {
-                color: "#E0E0E0",
-              },
+              grid: { color: "#E0E0E0" },
               beginAtZero: true,
               max: 10,
             },
@@ -408,19 +384,13 @@
                 display: true,
                 text: "Faisabilité",
                 color: "#A0A0A0",
-                font: {
-                  size: 14,
-                },
+                font: { size: 14 },
               },
               ticks: {
                 color: "#A0A0A0",
-                font: {
-                  size: 12,
-                },
+                font: { size: 12 },
               },
-              grid: {
-                color: "#E0E0E0",
-              },
+              grid: { color: "#E0E0E0" },
               beginAtZero: true,
               max: 10,
             },
@@ -434,7 +404,6 @@
       chart = new Chart(ctx, config);
     }
 
-    // Get category color
     function getCouleurCategorie(categorie) {
       switch (categorie) {
         case "connaissances-internes":
@@ -448,6 +417,5 @@
       }
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
