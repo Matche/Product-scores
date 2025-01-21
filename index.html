@@ -267,8 +267,22 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <script>
-    const idees = [];
+    let idees = [];
     let chart = null;
+
+    // Charger les idées depuis le localStorage au démarrage
+    window.onload = function() {
+      const ideesStockees = localStorage.getItem('idees');
+      if (ideesStockees) {
+        idees = JSON.parse(ideesStockees);
+        afficherIdees();
+        mettreAJourGraphique();
+      }
+    };
+
+    function sauvegarderIdees() {
+      localStorage.setItem('idees', JSON.stringify(idees));
+    }
 
     function calculerDesirabilite(benefices, portee) {
       return (benefices * 0.6 + portee * 0.4).toFixed(2);
@@ -308,6 +322,7 @@
       };
 
       idees.push(idee);
+      sauvegarderIdees();
       afficherIdees();
       mettreAJourGraphique();
     }
@@ -337,6 +352,7 @@
 
     function supprimerIdee(index) {
       idees.splice(index, 1);
+      sauvegarderIdees();
       afficherIdees();
       mettreAJourGraphique();
     }
